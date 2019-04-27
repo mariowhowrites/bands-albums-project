@@ -14,7 +14,7 @@ class BandController extends Controller
      */
     public function index()
     {
-        //
+        return view('band/index');
     }
 
     /**
