@@ -5,15 +5,24 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>Laravel</title>
-
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
 
         <!-- Styles -->
         <link href="/css/app.css" rel="stylesheet">
-        <script src="/js/app.js"></script>
     </head>
-    <body>
+    <body class="w-4/5 mx-auto font-sans">
+        <aside class="my-8 flex justify-between font-bold">
+            <span>
+                <p class="opacity-75">Bands and Albums Website</p>
+            </span>
+            <nav>
+                <a href="{{ route('band.index') }}" class="mr-2">Bands</a>
+                <a href="{{ route('album.index') }}">Albums</a>
+            </nav>
+        </aside>
         @yield('content')
+        <script src="/js/app.js"></script>
     </body>
 </html>

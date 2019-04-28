@@ -14,7 +14,9 @@ class BandController extends Controller
      */
     public function index()
     {
-        return view('band/index');
+        $bands = Band::all();
+
+        return view('band/index')->withBands($bands);
     }
 
     /**
@@ -24,7 +26,7 @@ class BandController extends Controller
      */
     public function create()
     {
-        //
+        return view('band/create');
     }
 
     /**
@@ -35,7 +37,17 @@ class BandController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'band.name' => 'required'
+        ]);
+
+        $band = tap($request->input('band'), function ($band) {
+            $band['still_active'] = isset($band['still_active']) ? true : false;
+        });
+
+        Band::create($band);
+
+        return redirect(route('band.index'));
     }
 
     /**
@@ -57,7 +69,7 @@ class BandController extends Controller
      */
     public function edit(Band $band)
     {
-        //
+        return view('band/edit')->withBand($band->load('albums'));
     }
 
     /**
@@ -69,7 +81,22 @@ class BandController extends Controller
      */
     public function update(Request $request, Band $band)
     {
-        //
+        $request->validate([
+            'band.name' => 'required'
+        ]);
+
+        $newBand = tap(
+            $request->input('band'),
+            function ($band) {
+                $band['still_active'] = isset($band['still_active']) ? true : false;
+            }
+        );
+
+        $band->fill($newBand);
+
+        $band->save();
+
+        return redirect(route('band.index'));
     }
 
     /**
@@ -78,8 +105,14 @@ class BandController extends Controller
      * @param  \App\Band  $band
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Band $band)
+    public function destroy(Request $request, Band $band)
     {
-        //
+        $band->albums->each(function ($album) {
+            $album->delete();
+        });
+
+        $band->delete();
+
+        return redirect(route('band.index'));
     }
 }

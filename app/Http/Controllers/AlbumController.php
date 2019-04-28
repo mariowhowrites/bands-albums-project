@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Album;
 use Illuminate\Http\Request;
+use App\Band;
 
 class AlbumController extends Controller
 {
@@ -14,7 +15,10 @@ class AlbumController extends Controller
      */
     public function index()
     {
-        //
+        $albums = Album::all()->load('band');
+        $bands = Band::all();
+
+        return view('album/index')->withAlbums($albums)->withBands($bands);
     }
 
     /**
@@ -24,7 +28,9 @@ class AlbumController extends Controller
      */
     public function create()
     {
-        //
+        $bands = Band::all();
+
+        return view('album/create')->withBands($bands);
     }
 
     /**
@@ -35,7 +41,16 @@ class AlbumController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'album.name' => 'required'
+        ]);
+
+        Album::create($request->input('album'));
+
+        $albums = Album::all()->load('band');
+        $bands = Band::all();
+
+        return redirect(route('album.index'))->withAlbums($albums)->withBands($bands);
     }
 
     /**
@@ -46,7 +61,7 @@ class AlbumController extends Controller
      */
     public function show(Album $album)
     {
-        //
+        return view('album/show')->withAlbum($album);
     }
 
     /**
@@ -57,7 +72,9 @@ class AlbumController extends Controller
      */
     public function edit(Album $album)
     {
-        //
+        $bands = Band::all();
+
+        return view('album/edit')->withAlbum($album)->withBands($bands);
     }
 
     /**
@@ -69,7 +86,19 @@ class AlbumController extends Controller
      */
     public function update(Request $request, Album $album)
     {
-        //
+        $request->validate([
+            'album.name' => 'required'
+        ]);
+
+        tap($request->input('album'), function ($newAlbum) use ($album) {
+            $album->fill($newAlbum);
+            $album->save();
+        });
+
+        $albums = Album::all()->load('band');
+        $bands = Band::all();
+
+        return redirect(route('album.index'))->withAlbums($albums)->withBands($bands);
     }
 
     /**
@@ -80,6 +109,11 @@ class AlbumController extends Controller
      */
     public function destroy(Album $album)
     {
-        //
+        $album->delete();
+
+        $albums = Album::all()->load('band');
+        $bands = Band::all();
+
+        return redirect(route('album.index'))->withAlbums($albums)->withBands($bands);
     }
 }
