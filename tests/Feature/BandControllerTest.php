@@ -14,6 +14,7 @@ class BandControllerTest extends TestCase
     public function test_that_name_is_required_when_creating_a_band()
     {
         $band = factory(Band::class)->make(['name' => null])->toArray();
+        unset($band['routes']);
         $this->assertDatabaseMissing('bands', $band);
 
         $response = $this->post(
@@ -29,15 +30,18 @@ class BandControllerTest extends TestCase
     public function test_that_name_is_required_when_editing_a_band()
     {
         $band = factory(Band::class)->create()->fresh();
-        $this->assertDatabaseHas('bands', $band->toArray());
+        $bandArray = $band->toArray();
+        unset($bandArray['routes']);
 
-        $band->name = null;
+        $this->assertDatabaseHas('bands', $bandArray);
+
+        $bandArray['name'] = null;
         $response = $this->put(
             route('band.update', compact('band')),
-            ['band' => $band->toArray()]
+            ['band' => $bandArray]
         );
 
         $response->assertStatus(302);
-        $this->assertDatabaseMissing('bands', $band->toArray());
+        $this->assertDatabaseMissing('bands', $bandArray);
     }
 }

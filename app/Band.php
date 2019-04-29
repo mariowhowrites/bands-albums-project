@@ -18,7 +18,7 @@ class Band extends Model
 
     public function getFormattedStartDate()
     {
-        return Carbon::create($this->start_date)->format('j F, Y');
+        return Carbon::create($this->start_date)->format('d M Y');
     }
 
     public function getFormattedActiveStatus()

@@ -19,14 +19,14 @@ class AlbumBrowserTest extends DuskTestCase
             $browser->visit(route('album.index'));
 
             foreach ($albums as $album) {
-                $browser->assertSee($album->name);
-                $browser->assertSee($album->band->name);
-                $browser->assertSee($album->getFormattedReleaseDate());
-                $browser->assertSee($album->getFormattedRecordedDate());
-                $browser->assertSee($album->number_of_tracks);
-                $browser->assertSee($album->genre);
-                $browser->assertSee($album->label);
-                $browser->assertSee($album->producer);
+                $browser->assertSee($album->name)
+                    ->assertSee($album->band->name)
+                    ->assertSee($album->getFormattedReleaseDate())
+                    ->assertSee($album->getFormattedRecordedDate())
+                    ->assertSee($album->number_of_tracks)
+                    ->assertSee($album->genre)
+                    ->assertSee($album->label)
+                    ->assertSee($album->producer);
             }
         });
     }

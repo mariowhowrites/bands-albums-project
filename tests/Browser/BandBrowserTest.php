@@ -25,10 +25,10 @@ class BandBrowserTest extends DuskTestCase
             $browser->visit('/');
 
             foreach ($bands as $band) {
-                $browser->assertSee($band->name);
-                $browser->assertSee($band->getFormattedStartDate());
-                $browser->assertSee($band->website);
-                $browser->assertSee($band->getFormattedActiveStatus());
+                $browser->assertSee($band->name)
+                    ->assertSee($band->getFormattedStartDate())
+                    ->assertSee($band->website)
+                    ->assertSee($band->getFormattedActiveStatus());
             }
         });
     }
@@ -40,29 +40,48 @@ class BandBrowserTest extends DuskTestCase
 
         $this->assertDatabaseHas('bands', [
             'id' => $band->id
-        ]);
-
-        $this->assertDatabaseHas('albums', [
+        ])->assertDatabaseHas('albums', [
             'id' => $album->id,
             'band_id' => $band->id
         ]);
 
 
         $this->browse(function (Browser $browser) use ($band) {
-            $browser->visit('/');
-
-            $browser->with("@{$band->name}", function ($bandListing) {
-                $bandListing->clickLink('Delete');
-            });
+            $browser->visit(route('band.index'))
+                ->with("@{$band->name}", function ($bandListing) {
+                    $bandListing->clickLink('Delete');
+                });
         });
 
         $this->assertDatabaseMissing('bands', [
             'id' => $band->id
-        ]);
-
-        $this->assertDatabaseMissing('albums', [
+        ])->assertDatabaseMissing('albums', [
             'id' => $album->id,
             'band_id' => $band->id
         ]);
+    }
+
+    public function test_that_deleting_a_band_removes_their_albums_from_album_index()
+    {
+        $band = factory(Band::class)->create();
+        $album = factory(Album::class)->create(['band_id' => $band->id]);
+
+        $this->browse(function (Browser $browser) use ($band, $album) {
+            $browser->visit(route('band.index'))
+                ->assertSee($band->name)
+                ->with("@{$band->name}", function ($bandListing) {
+                    $bandListing->clickLink('Edit');
+                })
+                ->assertSee($album->name)
+                ->visit(route('album.index'))
+                ->assertSee($album->name)
+                ->visit(route('band.index'))
+                ->with("@{$band->name}", function ($bandListing) {
+                    $bandListing->clickLink('Delete');
+                })
+                ->assertDontSee($band->name)
+                ->visit(route('album.index'))
+                ->assertDontSee($album->name);
+        });
     }
 }

@@ -20,12 +20,12 @@ class Album extends Model
 
     public function getFormattedReleaseDate()
     {
-        return Carbon::create($this->release_date)->format('j F, Y');
+        return Carbon::create($this->release_date)->format('d M Y');
     }
 
     public function getFormattedRecordedDate()
     {
-        return Carbon::create($this->recorded_date)->format('j F, Y');
+        return Carbon::create($this->recorded_date)->format('d M Y');
     }
 
     public function getRoutesAttribute()
