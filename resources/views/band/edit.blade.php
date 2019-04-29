@@ -4,21 +4,28 @@
   <header>
     <h1>Edit Band</h1>
   </header>
+  <p class="font-bold mb-1 mt-4">Albums</p>
+  <ul>
+    @foreach ($band->albums as $album)
+      <li>{{ $album->name }}</li>
+    @endforeach
+  </ul>
   <section>
     <form action="{{ route('band.update', compact('band')) }}" method="POST">
       @csrf
       @method('PUT')
 
-      <p class="font-bold mb-1 mt-4">Albums</p>
-      <ul>
-        @foreach ($band->albums as $album)
-          <li>{{ $album->name }}</li>
-        @endforeach
-      </ul>
+      @if($errors->any())
+        <div class="my-4">
+          @foreach ($errors->all() as $error)
+            <p class="text-red">{{ $error }}</p>
+          @endforeach
+        </div>
+      @endif
 
       <div class="flex flex-col items-start mt-4">
         <label for="band[name]" class="font-bold mb-1">Name</label>
-        <input type="text" name="band[name]" id="band-name" class="pl-2 border shadow rounded bg-grey-lighter py-2" value="{{ $band->name }}">
+        <input type="text" name="band[name]" id="band-name" class="pl-2 @if($errors->any()) border-red border-2 @else border @endif shadow rounded bg-grey-lighter py-2" value="{{ $band->name }}">
       </div>
 
       <div class="flex flex-col items-start mt-4">

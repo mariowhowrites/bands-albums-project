@@ -8,10 +8,18 @@
   <form action="{{ route('album.update', compact('album')) }}" method="POST">
     @csrf
     @method('PUT')
-    
+
+    @if($errors->any())
+      <div class="my-4">
+        @foreach ($errors->all() as $error)
+          <p class="text-red">{{ $error }}</p>
+        @endforeach
+      </div>
+    @endif
+
     <div class="flex flex-col items-start mt-4">
       <label for="album[name]" class="font-bold mb-1">Name</label>
-      <input type="text" name="album[name]" id="album-name" class="pl-2 border shadow rounded bg-grey-lighter py-2" value="{{ $album->name }}">
+      <input type="text" name="album[name]" id="album-name" class="pl-2 @if($errors->any()) border-red border-2 @else border @endif shadow rounded bg-grey-lighter py-2" value="{{ $album->name }}">
     </div>
 
     <div class="flex flex-col items-start mt-4">
