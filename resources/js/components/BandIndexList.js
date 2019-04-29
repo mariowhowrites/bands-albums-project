@@ -9,9 +9,15 @@ export default function BandIndexList({ bands }) {
                 dusk={band.name}
                 className={listItemClasses(index)}
             >
-                <span className="w-2/5">{band.name}</span>
-                <span className="w-1/5">{formatDate(band.start_date)}</span>
-                <span className="w-1/5">{band.website}</span>
+                <span className="w-2/5">
+                    {band.name || "Ted's Excellent Band"}
+                </span>
+                <span className="w-1/5">
+                    {band.start_date
+                        ? formatDate(band.start_date)
+                        : "In the past"}
+                </span>
+                <span className="w-1/5">{band.website || "No website"}</span>
                 <span className="w-1/5">
                     {band.still_active ? "Active" : "Retired"}
                 </span>

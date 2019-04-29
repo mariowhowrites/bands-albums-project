@@ -1,7 +1,12 @@
 import React from "react";
-import { formatDate } from "./utils"
+import { formatDate } from "./utils";
 
 export default function AlbumIndexList({ albums }) {
+    console.log(
+        albums.filter(
+            album => album.band.name === "stoltenberg abernathy kunze"
+        )
+    );
     return (
         <section>
             {albums.map(album => (
@@ -10,11 +15,18 @@ export default function AlbumIndexList({ albums }) {
                     className="mb-6 flex flex-col rounded shadow"
                 >
                     <div className="bg-grey-light rounded-t pt-4 px-2">
-                        <header className="text-2xl">{album.name}</header>
-                        <p className="pt-3">By {album.band.name}</p>
+                        <header className="text-2xl">
+                            {album.name || "Excellent Album"}
+                        </header>
+                        <p className="pt-3">
+                            By {album.band ? album.band.name : "Nobody"}
+                        </p>
                         <p className="pt-1">
-                            Released {formatDate(album.release_date)}.{" "}
-                            {album.number_of_tracks} tracks
+                            Released{" "}
+                            {album.release_date
+                                ? formatDate(album.release_date)
+                                : "Forever Ago"}
+                            . {album.number_of_tracks || "Numerous"} tracks
                         </p>
                         <p className="py-6">
                             <a
@@ -32,17 +44,24 @@ export default function AlbumIndexList({ albums }) {
                         </p>
                     </div>
                     <div className="flex flex-wrap px-2 py-6">
-                        <p className="w-1/2 pb-3">Genre: {album.genre}</p>
-                        <p className="w-1/2 pb-3">Label: {album.label}</p>
-                        <p className="w-1/2 ">
-                            Recorded On: {formatDate(album.recorded_date)}
+                        <p className="w-1/2 pb-3">
+                            Genre: {album.genre || "Music"}
                         </p>
-                        <p className="w-1/2">Producer: {album.producer}</p>
+                        <p className="w-1/2 pb-3">
+                            Label: {album.label || "Top Dawg Records"}
+                        </p>
+                        <p className="w-1/2 ">
+                            Recorded On:{" "}
+                            {album.recorded_date
+                                ? formatDate(album.recorded_date)
+                                : "One fine day"}
+                        </p>
+                        <p className="w-1/2">
+                            Producer: {album.producer || "Sally the Producer"}
+                        </p>
                     </div>
                 </article>
             ))}
         </section>
     );
 }
-
-
